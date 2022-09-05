@@ -37,7 +37,7 @@ def get_archive_name(src: str, dst: str) -> str:
     return f"{dst}\\{archive_name}"
 
 
-def get_settings(path: str = "settings.json"):
+def get_app_settings(path: str = "settings.json"):
 
     with open(path, "r") as file_handle:
         return json.load(file_handle)
@@ -53,12 +53,12 @@ def zip_with_animation(src: str, dst: str) -> None:
     def wrapper(func, *args):
         func(*args)
 
-    zip_active = threading.Thread(target=wrapper, args=(zip_dir, src, dst))
-    zip_active.start()
+    zip_files = threading.Thread(target=wrapper, args=(zip_dir, src, dst))
+    zip_files.start()
 
-    while zip_active.is_alive():
+    while zip_files.is_alive():
 
         ui.in_progress_animation()
-        zip_active.join(0.2)
+        zip_files.join(0.2)
 
     ui.finalize_animation()

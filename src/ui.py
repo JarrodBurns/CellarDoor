@@ -39,7 +39,7 @@ def in_progress_animation() -> None:
 
 def print_header() -> None:
 
-    SETTINGS = filemanager.get_settings()
+    SETTINGS = filemanager.get_app_settings()
 
     print(
         "################################################################\n"
