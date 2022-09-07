@@ -27,8 +27,8 @@ def main() -> None:
 
     filemanager.delete_excess_backup_files(DST, MAX_BACKUPS)
 
+    ui.print_stats_all_time()
     ui.print_footer()
-
     time.sleep(5)
 
 

@@ -43,6 +43,18 @@ def get_app_settings(path: str = "settings.json"):
         return json.load(file_handle)
 
 
+def get_stats(path: str = "stats.json"):
+
+    with open(path, "r") as file_handle:
+        return json.load(file_handle)
+
+
+def set_stats(json_to_write: dict, path: str = "stats.json"):
+
+    with open(path, "w") as file_handle:
+        json.dump(json_to_write, file_handle)
+
+
 def zip_dir(src: str, dst: str) -> None:
 
     shutil.make_archive(dst, "zip", src)

@@ -14,3 +14,5 @@ So far I have written some logic to handle scheduling windows tasks programmatic
 - Time spent archiving
 - Number of backups created
 - Cumulative size of files managed 
+
+- files deleted
