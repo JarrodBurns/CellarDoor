@@ -3,9 +3,19 @@ import json
 import os
 import shutil
 import threading
+from dataclasses import dataclass
 from datetime import datetime
 
 import ui
+
+
+@dataclass
+class FileSize:
+    size: float
+    scale: str
+
+    def __str__(self):
+        return f"{self.size} {self.scale}"
 
 
 def backup_made_today(path: str) -> bool:
@@ -18,6 +28,31 @@ def backup_made_today(path: str) -> bool:
             return True
 
     return False
+
+
+def bytes_to_scale(
+    size_in_bytes: int,
+    size_format: str = "gb",
+    rounding_precision: int = 2
+) -> FileSize:
+
+    byte_scales = {
+        "kb": 1,
+        "mb": 2,
+        "gb": 3,
+        "tb": 4,
+    }
+
+    if size_format not in byte_scales.keys():
+
+        raise ValueError(f"Invalid mode: '{size_format}'")
+
+    converted_size = size_in_bytes / (1024 ** byte_scales[size_format])
+
+    return FileSize(
+        round(converted_size, rounding_precision),
+        size_format
+    )
 
 
 def delete_excess_backup_files(path: str, max_backups: int) -> None:
@@ -43,13 +78,15 @@ def get_app_settings(path: str = "settings.json"):
         return json.load(file_handle)
 
 
-def get_stats(path: str = "stats.json"):
+def get_stats(path: str) -> dict:
+
+    path = f"{os.path.abspath(os.getcwd())}\\stats.json"
 
     with open(path, "r") as file_handle:
         return json.load(file_handle)
 
 
-def set_stats(json_to_write: dict, path: str = "stats.json"):
+def set_stats(json_to_write: dict, path: str) -> None:
 
     with open(path, "w") as file_handle:
         json.dump(json_to_write, file_handle)

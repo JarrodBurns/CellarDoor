@@ -71,9 +71,9 @@ def print_with_timestamp(statment: str) -> None:
     print(f"[{current_time}]  {statment}")
 
 
-def print_stats_all_time() -> None:
+def print_stats_all_time(path: str) -> None:
 
-    t = filemanager.get_stats()
+    t = filemanager.get_stats(path)
 
     executions = t['stats']['executions']
     total_data = t['stats']['data_transacted']
