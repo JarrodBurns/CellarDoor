@@ -55,7 +55,7 @@ def print_header() -> None:
         f"[!] Save backup to:  {SETTINGS['APP']['DESTINATION']}\n"
     )
 
-    print('.' * 64 + '\n')
+    print('.' * 64, end="\n\n")
 
 
 def print_footer() -> None:
@@ -73,15 +73,15 @@ def print_with_timestamp(statment: str) -> None:
 
 def print_stats_all_time(path: str) -> None:
 
-    t = filemanager.get_stats(path)
+    all_time = filemanager.get_stats(path)
 
-    executions = t['stats']['executions']
-    total_data = t['stats']['data_transacted']
+    executions = all_time['stats']['executions']
+    total_data = all_time['stats']['data_transacted']
 
-    hr_time = Clock.clock_from_seconds(t["stats"]["work_time"])
+    hr_time = Clock.clock_from_seconds(all_time["stats"]["work_time"])
     hr_data = ' '.join([str(x) for x in total_data])
 
-    print('.' * 64 + '\n')
+    print('.' * 64, end="\n\n")
     print("[&] Stats all time:\n")
     print(
         f"[!] Times this script has been executed:  {executions}\n"

@@ -72,7 +72,7 @@ def get_archive_name(src: str, dst: str) -> str:
     return f"{dst}\\{archive_name}"
 
 
-def get_app_settings(path: str = "settings.json"):
+def get_app_settings(path: str) -> dict:
 
     with open(path, "r") as file_handle:
         return json.load(file_handle)
@@ -80,13 +80,11 @@ def get_app_settings(path: str = "settings.json"):
 
 def get_stats(path: str) -> dict:
 
-    path = f"{os.path.abspath(os.getcwd())}\\stats.json"
-
     with open(path, "r") as file_handle:
         return json.load(file_handle)
 
 
-def set_stats(json_to_write: dict, path: str) -> None:
+def set_stats(path: str, json_to_write: dict) -> None:
 
     with open(path, "w") as file_handle:
         json.dump(json_to_write, file_handle)
