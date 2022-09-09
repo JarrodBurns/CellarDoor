@@ -1,0 +1,9 @@
+
+{
+    "APP": {
+        "DESTINATION": "D:\\backups",
+        "GO_TIME": "20:00",
+        "MAX_BACKUPS": 5,
+        "SOURCE": "C:\\Users"
+    }
+}
