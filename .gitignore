@@ -1,8 +1,8 @@
 
 # Personal
 /deprecated
-settings.json
-stats.json
+src/settings.json
+src/stats.json
 
 # official python gitignore
 # Byte-compiled / optimized / DLL files
