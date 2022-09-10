@@ -1,10 +1,11 @@
 
 import json
-import os
 import shutil
-import threading
 from dataclasses import dataclass
 from datetime import datetime
+from pathlib import Path
+from threading import Thread
+from typing import Any
 
 import ui
 
@@ -18,13 +19,13 @@ class FileSize:
         return f"{self.size} {self.scale}"
 
 
-def backup_made_today(path: str) -> bool:
+def backup_made_today(path: Path) -> bool:
 
     today = datetime.now().strftime("%b-%d-%y")
 
-    for i in os.listdir(path):
+    for i in path.glob("**/*"):
 
-        if i.split('_')[0] == today:
+        if i.parts[-1].split('_')[0] == today:
             return True
 
     return False
@@ -55,52 +56,50 @@ def bytes_to_scale(
     )
 
 
-def delete_excess_backup_files(path: str, max_backups: int) -> None:
+def delete_excess_backup_files(path: Path, max_backups: int) -> None:
 
-    while len(os.listdir(path)) > max_backups:
+    archives = [str(x) for x in list(path.glob("**/*"))]
 
-        os.remove(f"{path}\\{min(os.listdir(path))}")
+    while len(archives) > max_backups:
+
+        oldest_archive = archives.pop(archives.index(min(archives)))
+        Path(oldest_archive).unlink()
 
 
-def get_archive_name(src: str, dst: str) -> str:
+def get_archive_dst(src: Path, dst: Path) -> Path:
 
     date_and_time = datetime.now().strftime("%b-%d-%y_%H-%M-%S")
+    archive_name = f"{date_and_time}_{src.parts[-1]}"
 
-    backup_directory = src.split('\\')[-1]
-    archive_name = f"{date_and_time}_{backup_directory}"
-
-    return f"{dst}\\{archive_name}"
+    return dst.joinpath(archive_name)
 
 
-def get_app_settings(path: str) -> dict:
+def get_app_settings(path: Path) -> dict[str, Any]:
 
     with open(path, "r") as file_handle:
         return json.load(file_handle)
 
 
-def get_stats(path: str) -> dict:
+def get_stats(path: Path) -> dict[str, Any]:
 
     with open(path, "r") as file_handle:
         return json.load(file_handle)
 
 
-def set_stats(path: str, json_to_write: dict) -> None:
+def set_stats(path: Path, json_to_write: dict[str, Any]) -> None:
 
     with open(path, "w") as file_handle:
         json.dump(json_to_write, file_handle)
 
 
-def zip_dir(src: str, dst: str) -> None:
+def zip_dir(src: Path, dst: Path) -> None:
 
     shutil.make_archive(dst, "zip", src)
 
 
-def zip_with_animation(src: str, dst: str) -> None:
+def zip_with_animation(src: Path, dst: Path) -> None:
 
-    def wrapper(func, *args):
-        func(*args)
-
-    zip_files = threading.Thread(target=wrapper, args=(zip_dir, src, dst))
+    zip_files = Thread(target=lambda: zip_dir(src, dst))
     zip_files.start()
 
     while zip_files.is_alive():

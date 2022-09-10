@@ -1,7 +1,8 @@
 
-import time
 import os
+import time
 from datetime import datetime
+from pathlib import Path
 
 import filemanager
 import ui
@@ -9,17 +10,23 @@ import ui
 
 def main() -> None:
 
-    SETTINGS_PATH = f"{os.path.abspath(os.getcwd())}\\settings.json"
+    CWD = Path().cwd()
+
+    SETTINGS_PATH = CWD.joinpath("settings.json")
+    STATS_PATH = CWD.joinpath("stats.json")
+
     SETTINGS = filemanager.get_app_settings(SETTINGS_PATH)
-    SRC = SETTINGS["APP"]["SOURCE"]
-    DST = SETTINGS["APP"]["DESTINATION"]
+    SRC = Path(SETTINGS["APP"]["SOURCE"])
+    DST = Path(SETTINGS["APP"]["DESTINATION"])
+    ARCHIVE_DST = filemanager.get_archive_dst(SRC, DST)
+
     MAX_BACKUPS = SETTINGS["APP"]["MAX_BACKUPS"]
-    ARCHIVE_DST = filemanager.get_archive_name(SRC, DST)
-    STATS_PATH = f"{os.path.abspath(os.getcwd())}\\stats.json"
 
     all_time = filemanager.get_stats(STATS_PATH)
 
-    ui.print_header()
+    os.system("mode con cols=64 lines=27")
+
+    ui.print_header(SETTINGS_PATH)
 
     if not filemanager.backup_made_today(DST):
 
@@ -32,7 +39,7 @@ def main() -> None:
         stopwatch = (datetime.now() - stopwatch).seconds
 
         file_size = filemanager.bytes_to_scale(
-            os.path.getsize(ARCHIVE_DST + ".zip")
+            Path(f"{ARCHIVE_DST}.zip").stat().st_size
         )
         all_time["stats"]["work_time"] += stopwatch
         all_time["stats"]["executions"] += 1

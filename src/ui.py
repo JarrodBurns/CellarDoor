@@ -1,5 +1,6 @@
 
 from datetime import datetime
+from pathlib import Path
 from time import sleep
 
 import filemanager
@@ -38,9 +39,9 @@ def in_progress_animation() -> None:
         sleep(.2)
 
 
-def print_header() -> None:
+def print_header(path: Path) -> None:
 
-    SETTINGS = filemanager.get_app_settings()
+    SETTINGS = filemanager.get_app_settings(path)
 
     print(
         "################################################################\n"
@@ -71,7 +72,7 @@ def print_with_timestamp(statment: str) -> None:
     print(f"[{current_time}]  {statment}")
 
 
-def print_stats_all_time(path: str) -> None:
+def print_stats_all_time(path: Path) -> None:
 
     all_time = filemanager.get_stats(path)
 
