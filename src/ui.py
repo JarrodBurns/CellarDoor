@@ -2,9 +2,15 @@
 from datetime import datetime
 from pathlib import Path
 from time import sleep
+import os
 
-import filemanager
 from clock import Clock
+import filemanager
+
+
+def draw_console() -> None:
+
+    os.system("mode con cols=64 lines=27")
 
 
 def finalize_animation() -> None:
@@ -89,3 +95,11 @@ def print_stats_all_time(path: Path) -> None:
         f"[!] Data written to disk:  {hr_data}\n"
         f"[!] Time spent handeling files:  {hr_time}\n"
     )
+
+
+def main() -> None:
+    pass
+
+
+if __name__ == "__main__":
+    main()

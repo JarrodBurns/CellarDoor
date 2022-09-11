@@ -1,6 +1,6 @@
 
-import re
 from math import prod
+import re
 
 
 class Clock:
