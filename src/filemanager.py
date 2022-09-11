@@ -1,5 +1,5 @@
 
-from dataclasses import dataclass
+from dataclasses import dataclass, astuple
 from datetime import datetime
 from pathlib import Path
 from threading import Thread
@@ -18,22 +18,27 @@ class FileSize:
     def __str__(self):
         return f"{self.size} {self.scale}"
 
+    def __iter__(self):
+        return iter(astuple(self))
 
-def backup_made_today(path: Path) -> bool:
+
+def backup_made_today(src_dir: Path) -> bool:
 
     today = datetime.now().strftime("%b-%d-%y")
 
-    for i in path.glob("**/*"):
+    for path in src_dir.glob("**/*"):
 
-        if i.parts[-1].split('_')[0] == today:
+        if path.parts[-1].split('_')[0] == today:
+
+            print("[E] Backup already exists for today!\n")
             return True
 
     return False
 
 
-def delete_excess_backup_files(path: Path, max_backups: int) -> None:
+def police_backup_files(src_dir: Path, max_backups: int) -> None:
 
-    archives = [str(x) for x in list(path.glob("**/*"))]
+    archives = [str(x) for x in list(src_dir.glob("**/*"))]
 
     while len(archives) > max_backups:
 
@@ -53,12 +58,14 @@ def get_archive_dst(src: Path, dst: Path) -> Path:
 def get_json(path: Path) -> dict[str, Any]:
 
     with open(path, "r") as file_handle:
+
         return json.load(file_handle)
 
 
 def set_json(path: Path, json_to_write: dict[str, Any]) -> None:
 
     with open(path, "w") as file_handle:
+
         json.dump(json_to_write, file_handle)
 
 
@@ -111,6 +118,8 @@ def zip_dir(src: Path, dst: Path) -> None:
 
 
 def zip_with_animation(src: Path, dst: Path) -> None:
+
+    ui.print_with_timestamp("Beginning file backup.")
 
     zip_files = Thread(target=lambda: zip_dir(src, dst))
     zip_files.start()
