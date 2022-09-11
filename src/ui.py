@@ -47,7 +47,7 @@ def in_progress_animation() -> None:
 
 def print_header(path: Path) -> None:
 
-    SETTINGS = filemanager.get_app_settings(path)
+    SETTINGS = filemanager.get_json(path)
 
     print(
         "################################################################\n"
@@ -80,7 +80,7 @@ def print_with_timestamp(statment: str) -> None:
 
 def print_stats_all_time(path: Path) -> None:
 
-    all_time = filemanager.get_stats(path)
+    all_time = filemanager.get_json(path)
 
     executions = all_time['stats']['executions']
     total_data = all_time['stats']['data_transacted']

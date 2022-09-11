@@ -4,8 +4,8 @@ from datetime import datetime
 from pathlib import Path
 from threading import Thread
 from typing import Any
+from zipfile import ZipFile, ZIP_DEFLATED
 import json
-import shutil
 
 import ui
 
@@ -66,27 +66,21 @@ def delete_excess_backup_files(path: Path, max_backups: int) -> None:
         Path(oldest_archive).unlink()
 
 
-def get_archive_dir(src: Path, dst: Path) -> Path:
+def get_archive_dst(src: Path, dst: Path) -> Path:
 
     date_and_time = datetime.now().strftime("%b-%d-%y_%H-%M-%S")
-    archive_name = f"{date_and_time}_{src.parts[-1]}"
+    archive_name = f"{date_and_time}_{src.parts[-1]}.zip"
 
     return dst.joinpath(archive_name)
 
 
-def get_app_settings(path: Path) -> dict[str, Any]:
+def get_json(path: Path) -> dict[str, Any]:
 
     with open(path, "r") as file_handle:
         return json.load(file_handle)
 
 
-def get_stats(path: Path) -> dict[str, Any]:
-
-    with open(path, "r") as file_handle:
-        return json.load(file_handle)
-
-
-def set_stats(path: Path, json_to_write: dict[str, Any]) -> None:
+def set_json(path: Path, json_to_write: dict[str, Any]) -> None:
 
     with open(path, "w") as file_handle:
         json.dump(json_to_write, file_handle)
@@ -99,18 +93,22 @@ def update_stats(
     executions: int = 1
 ) -> None:
 
-    all_time = get_stats(json_path)
+    all_time = get_json(json_path)
 
     all_time["stats"]["data_transacted"][0] += file_size.size
-    all_time["stats"]["executions"] += 1
+    all_time["stats"]["executions"] += executions
     all_time["stats"]["work_time"] += stopwatch
 
-    set_stats(json_path, all_time)
+    set_json(json_path, all_time)
 
 
 def zip_dir(src: Path, dst: Path) -> None:
 
-    shutil.make_archive(dst, "zip", src)
+    with ZipFile(dst, 'w', compression=ZIP_DEFLATED) as archive:
+
+        for file_path in src.rglob('*'):
+
+            archive.write(file_path, arcname=file_path.relative_to(src))
 
 
 def zip_with_animation(src: Path, dst: Path) -> None:
