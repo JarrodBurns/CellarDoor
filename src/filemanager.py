@@ -31,31 +31,6 @@ def backup_made_today(path: Path) -> bool:
     return False
 
 
-def bytes_to_scale(
-    size_in_bytes: int,
-    size_format: str = "gb",
-    rounding_precision: int = 2
-) -> FileSize:
-
-    byte_scales = {
-        "kb": 1,
-        "mb": 2,
-        "gb": 3,
-        "tb": 4,
-    }
-
-    if size_format not in byte_scales.keys():
-
-        raise ValueError(f"Invalid mode: '{size_format}'")
-
-    converted_size = size_in_bytes / (1024 ** byte_scales[size_format])
-
-    return FileSize(
-        round(converted_size, rounding_precision),
-        size_format
-    )
-
-
 def delete_excess_backup_files(path: Path, max_backups: int) -> None:
 
     archives = [str(x) for x in list(path.glob("**/*"))]
@@ -63,6 +38,7 @@ def delete_excess_backup_files(path: Path, max_backups: int) -> None:
     while len(archives) > max_backups:
 
         oldest_archive = archives.pop(archives.index(min(archives)))
+
         Path(oldest_archive).unlink()
 
 
@@ -84,6 +60,29 @@ def set_json(path: Path, json_to_write: dict[str, Any]) -> None:
 
     with open(path, "w") as file_handle:
         json.dump(json_to_write, file_handle)
+
+
+def scale_bytes(
+    size_in_bytes: int,
+    size_format: str = "gb",
+    rounding_precision: int = 2
+) -> FileSize:
+
+    scales = {
+        "kb": 1,
+        "mb": 2,
+        "gb": 3,
+        "tb": 4,
+    }
+
+    if size_format not in scales.keys():
+
+        raise ValueError(f"Invalid mode: '{size_format}'")
+
+    converted_size = size_in_bytes / (1024 ** scales[size_format])
+    converted_size = round(converted_size, rounding_precision)
+
+    return FileSize(converted_size, size_format)
 
 
 def update_stats(

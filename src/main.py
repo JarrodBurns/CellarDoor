@@ -22,7 +22,7 @@ def main() -> None:
 
         stopwatch = (datetime.now() - stopwatch).seconds
         file_size = C.ARCHIVE_DST.stat().st_size
-        file_size = filemanager.bytes_to_scale(file_size, size_format="gb")
+        file_size = filemanager.scale_bytes(file_size, size_format="gb")
 
         filemanager.update_stats(C.STATS_PATH, file_size, stopwatch)
         filemanager.delete_excess_backup_files(C.DST, C.MAX_BACKUPS)
