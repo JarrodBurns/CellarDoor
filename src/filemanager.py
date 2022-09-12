@@ -145,7 +145,8 @@ def update_stats(
 
 def zip_dir(src: Path, dst: Path) -> None:
 
-    with ZipFile(dst, 'w', compression=ZIP_DEFLATED) as archive:
+    with ZipFile(
+            dst, 'w', allowZip64=True, compression=ZIP_DEFLATED) as archive:
 
         for file_path in src.rglob('*'):
 
