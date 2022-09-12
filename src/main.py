@@ -18,7 +18,7 @@ def main() -> None:
 
         filemanager.zip_with_animation(C.SRC, C.ARCHIVE_DST)
 
-        stopwatch = (datetime.now() - stopwatch).seconds
+        stopwatch = datetime.now() - stopwatch
         file_size = C.ARCHIVE_DST.stat().st_size
         file_size = filemanager.scale_bytes(file_size, size_format="gb")
 

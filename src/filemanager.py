@@ -22,34 +22,69 @@ class FileSize:
         return iter(astuple(self))
 
 
+def _sort_backup_files(archives: list[Path, ...]
+                       ) -> list[tuple[int, datetime], ...]:
+    """
+    Orders and returns a given list by oldest date to youngest date
+    """
+    index_datetime = []  # int, datetime
+
+    for index, path in enumerate(archives):
+
+        try:
+
+            date_and_time = datetime.strptime(
+                "_".join(path.stem.split("_")[:2]), "%d-%b-%y_%H-%M-%S"
+            )
+
+            index_datetime.append((index, date_and_time))
+
+        except ValueError:
+            pass
+
+        except BaseException as e:
+            print(e)
+            break
+
+    index_datetime = sorted(
+        index_datetime, key=lambda x: x[1], reverse=True
+    )
+
+    return index_datetime
+
+
 def backup_made_today(src_dir: Path) -> bool:
+    """
+    Enumerates the source directory for a file name beginning
+    with todays date. A bool is returned to reflect the results.
+    """
+    if list(src_dir.glob(f"**/{datetime.now():%d-%b-%y}*")):
 
-    today = datetime.now().strftime("%b-%d-%y")
+        print("[E] Backup already exists for today!\n")
 
-    for path in src_dir.glob("**/*"):
-
-        if path.parts[-1].split('_')[0] == today:
-
-            print("[E] Backup already exists for today!\n")
-            return True
-
-    return False
+        return True
 
 
 def police_backup_files(src_dir: Path, max_backups: int) -> None:
+    """
+    Removes files from a given directory until it aligns with the
+    quantity specified by max_backups.
 
-    archives = [str(x) for x in list(src_dir.glob("**/*"))]
+    Sort order: Oldest first
+    """
+    pattern = "**/[0-9]?-[A-z]??-[0-9]?*"
+    archives = list(src_dir.glob(pattern))
 
-    while len(archives) > max_backups:
+    index_datetime = _sort_backup_files(archives)
 
-        oldest_archive = archives.pop(archives.index(min(archives)))
+    while len(index_datetime) > max_backups:
 
-        Path(oldest_archive).unlink()
+        archives[index_datetime.pop()[0]].unlink()
 
 
 def get_archive_dst(src: Path, dst: Path) -> Path:
 
-    date_and_time = datetime.now().strftime("%b-%d-%y_%H-%M-%S")
+    date_and_time = f"{datetime.now():%d-%b-%y_%H-%M-%S}"
     archive_name = f"{date_and_time}_{src.parts[-1]}.zip"
 
     return dst.joinpath(archive_name)
@@ -103,7 +138,7 @@ def update_stats(
 
     all_time["stats"]["data_transacted"][0] += file_size.size
     all_time["stats"]["executions"] += executions
-    all_time["stats"]["work_time"] += stopwatch
+    all_time["stats"]["work_time"] += stopwatch.seconds
 
     set_json(json_path, all_time)
 

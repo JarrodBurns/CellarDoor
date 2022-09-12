@@ -73,9 +73,7 @@ def print_footer() -> None:
 
 def print_with_timestamp(statment: str) -> None:
 
-    current_time = datetime.now().strftime("%H:%M:%S")
-
-    print(f"[{current_time}]  {statment}")
+    print(f"[{datetime.now():%H:%M:%S}]  {statment}")
 
 
 def print_stats_all_time(path: Path) -> None:
