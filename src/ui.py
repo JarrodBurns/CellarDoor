@@ -5,6 +5,7 @@ from time import sleep
 import os
 
 from clock import Clock
+import constants as C
 import filemanager
 
 
@@ -47,8 +48,6 @@ def in_progress_animation() -> None:
 
 def print_header(path: Path) -> None:
 
-    SETTINGS = filemanager.get_json(path)
-
     print(
         "################################################################\n"
         "####                 CellarDoor File Backup                 ####\n"
@@ -56,10 +55,10 @@ def print_header(path: Path) -> None:
     )
 
     print(
-        f"[!] File backup starts at:  {SETTINGS['APP']['GO_TIME']}\n"
-        f"[!] Maximum backups to store:  {SETTINGS['APP']['MAX_BACKUPS']}\n"
-        f"[!] Backup this directory:  {SETTINGS['APP']['SOURCE']}\n"
-        f"[!] Save backup to:  {SETTINGS['APP']['DESTINATION']}\n"
+        f"[!] File backup starts at:  {C.SETTINGS['APP']['GO_TIME']}\n"
+        f"[!] Maximum backups to store:  {C.SETTINGS['APP']['MAX_BACKUPS']}\n"
+        f"[!] Backup this directory:  {C.SETTINGS['APP']['SOURCE']}\n"
+        f"[!] Save backup to:  {C.SETTINGS['APP']['DESTINATION']}\n"
     )
 
     print('.' * 64, end="\n\n")
@@ -73,7 +72,7 @@ def print_footer() -> None:
 
 def print_with_timestamp(statment: str) -> None:
 
-    print(f"[{datetime.now():%H:%M:%S}]  {statment}")
+    print(f"[{datetime.now():{C.FMT_TIME}}]  {statment}")
 
 
 def print_stats_all_time(path: Path) -> None:
@@ -90,7 +89,7 @@ def print_stats_all_time(path: Path) -> None:
     print("[&] Stats all time:\n")
     print(
         f"[!] Times this script has been executed:  {executions}\n"
-        f"[!] Data written to disk:  {hr_data}\n"
+        f"[!] Data written to disk:  {hr_data:.2f}\n"
         f"[!] Time spent handeling files:  {hr_time}\n"
     )
 
