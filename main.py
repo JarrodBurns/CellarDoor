@@ -2,9 +2,9 @@
 from datetime import datetime
 import time
 
-import constants as C
-import filemanager
-import ui
+import modules.constants as C
+import modules.filemanager as filemanager
+import modules.ui as ui
 
 
 def main() -> None:

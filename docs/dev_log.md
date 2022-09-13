@@ -3,6 +3,7 @@ The intent of this application is to provide a low fluff file backup tool capabl
 
 # TO DO
 - [X] [Record and Display Stats](#record-and-display-stats)
+- [ ] Relative imports
 - [ ] Logging
 - [ ] Update configs to YAML
 - [ ] [Windows Task Scheduler](#windows-task-scheduler)
@@ -11,6 +12,8 @@ The intent of this application is to provide a low fluff file backup tool capabl
 
 ## Fixes
 - [ ] All file ops should check/create/error
+- [ ] Incorporate new datetime constants/rewrite parser logic
+- [ ] UI stats, str conversion necessary?
 
 ## Reading list
 - [ ] [ZipFile](https://docs.python.org/3/library/zipfile.html?highlight=zipfile#module-zipfile)

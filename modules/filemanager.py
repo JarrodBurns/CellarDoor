@@ -7,7 +7,7 @@ from typing import Any
 from zipfile import ZipFile, ZIP_DEFLATED
 import json
 
-import ui
+from . import ui
 
 
 @dataclass
