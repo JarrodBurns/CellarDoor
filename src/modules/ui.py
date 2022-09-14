@@ -4,7 +4,7 @@ from pathlib import Path
 from time import sleep
 import os
 
-from .clock import Clock
+from . clock import Clock
 from . import constants as C
 from . import filemanager
 
@@ -46,13 +46,12 @@ def in_progress_animation() -> None:
         sleep(.2)
 
 
-def print_header(path: Path) -> None:
+def print_header(app_name: str, fill_char: str = '#') -> None:
 
-    print(
-        "################################################################\n"
-        "####                 CellarDoor File Backup                 ####\n"
-        "################################################################\n"
-    )
+    fill = fill_char * 64
+    pad = fill_char * 4
+
+    print(fill, f'{pad}{app_name:^56}{pad}', fill, sep='\n', end="\n\n")
 
     print(
         f"[!] File backup starts at:  {C.SETTINGS['APP']['GO_TIME']}\n"
@@ -64,10 +63,10 @@ def print_header(path: Path) -> None:
     print('.' * 64, end="\n\n")
 
 
-def print_footer() -> None:
+def print_footer(fill_char: str = '#') -> None:
 
-    line = '#' * 64
-    print(line, line, sep='\n')
+    fill = fill_char * 64
+    print(fill, fill, sep='\n')
 
 
 def print_with_timestamp(statment: str) -> None:
@@ -80,16 +79,15 @@ def print_stats_all_time(path: Path) -> None:
     all_time = filemanager.get_json(path)
 
     executions = all_time['stats']['executions']
-    total_data = all_time['stats']['data_transacted']
-
+    total_data = all_time['stats']['data_transacted'][0]
     hr_time = Clock.clock_from_seconds(all_time["stats"]["work_time"])
-    hr_data = ' '.join([str(x) for x in total_data])
 
     print('.' * 64, end="\n\n")
+
     print("[&] Stats all time:\n")
     print(
         f"[!] Times this script has been executed:  {executions}\n"
-        f"[!] Data written to disk:  {hr_data}\n"
+        f"[!] Data written to disk:  {total_data:.2f}\n"
         f"[!] Time spent handeling files:  {hr_time}\n"
     )
 

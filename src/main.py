@@ -10,7 +10,7 @@ import modules.ui as ui
 def main() -> None:
 
     ui.draw_console()
-    ui.print_header(C.SETTINGS_PATH)
+    ui.print_header(C.APP_NAME)
 
     if not filemanager.backup_made_today(C.DST):
 

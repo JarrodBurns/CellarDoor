@@ -7,6 +7,7 @@ from typing import Any
 from zipfile import ZipFile, ZIP_DEFLATED
 import json
 
+from . import constants as C
 from . import ui
 
 
@@ -22,84 +23,54 @@ class FileSize:
         return iter(astuple(self))
 
 
-def _sort_backup_files(archives: list[Path, ...]
-                       ) -> list[tuple[int, datetime], ...]:
+def backup_made_today(archive_dir: Path) -> bool:
     """
-    Orders and returns a given list by oldest date to youngest date
+    Enumerates the given directory for a file name beginning
+    with today's date. A bool is returned to reflect the results.
     """
-    index_datetime = []  # int, datetime
-
-    for index, path in enumerate(archives):
-
-        try:
-
-            date_and_time = datetime.strptime(
-                "_".join(path.stem.split("_")[:2]), "%d-%b-%y_%H-%M-%S"
-            )
-
-            index_datetime.append((index, date_and_time))
-
-        except ValueError:
-            pass
-
-        except BaseException as e:
-            print(e)
-            break
-
-    index_datetime = sorted(
-        index_datetime, key=lambda x: x[1], reverse=True
-    )
-
-    return index_datetime
-
-
-def backup_made_today(src_dir: Path) -> bool:
-    """
-    Enumerates the source directory for a file name beginning
-    with todays date. A bool is returned to reflect the results.
-    """
-    if list(src_dir.glob(f"**/{datetime.now():%d-%b-%y}*")):
+    if list(archive_dir.glob(f"**/{datetime.now():{C.FMT_DATE}}*")):
 
         print("[E] Backup already exists for today!\n")
 
         return True
 
 
-def police_backup_files(src_dir: Path, max_backups: int) -> None:
+def police_backup_files(archive_dir: Path, max_backups: int) -> None:
     """
     Removes files from a given directory until it aligns with the
     quantity specified by max_backups.
 
     Sort order: Oldest first
     """
-    pattern = "**/[0-9]?-[A-z]??-[0-9]?*"
-    archives = list(src_dir.glob(pattern))
+    n = "[0-9]" * 2
+    pattern = f"**/{n * 2}-{n}-{n}--{n}-{n}-{n}_*"
+    archives = list(archive_dir.glob(pattern))
 
-    index_datetime = _sort_backup_files(archives)
+    while len(archives) > max_backups:
 
-    while len(index_datetime) > max_backups:
+        oldest_archive = min(archives)
+        oldest_archive.unlink()
+        archives.remove(oldest_archive)
 
-        archives[index_datetime.pop()[0]].unlink()
 
+def get_archive_dst(src: Path, archive_dir: Path) -> Path:
 
-def get_archive_dst(src: Path, dst: Path) -> Path:
-
-    date_and_time = f"{datetime.now():%d-%b-%y_%H-%M-%S}"
+    date_and_time = f"{datetime.now():{C.FMT_DATETIME}}"
     archive_name = f"{date_and_time}_{src.parts[-1]}.zip"
 
-    return dst.joinpath(archive_name)
+    return archive_dir.joinpath(archive_name)
 
 
-def get_json(path: Path) -> dict[str, Any]:
+def get_json(src: Path) -> dict[str, Any]:
 
-    with open(path, "r") as file_handle:
+    with open(src, "r") as file_handle:
 
         return json.load(file_handle)
 
 
-def set_json(path: Path, json_to_write: dict[str, Any]) -> None:
+def set_json(src: Path, json_to_write: dict[str, Any]) -> None:
 
-    with open(path, "w") as file_handle:
+    with open(src, "w") as file_handle:
 
         json.dump(json_to_write, file_handle)
 

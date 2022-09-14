@@ -22,12 +22,13 @@ class Clock:
 
         search = re.findall(r"[0-9]+", clock)
 
-        parts = [int(i) for i in search][::-1]
+        parts = [int(i) for i in search]
 
         while len(parts) < 4:
-            parts.append(0)
 
-        return parts[::-1]
+            parts.insert(0, 0)
+
+        return parts
 
     @classmethod
     def clock_from_seconds(cls, seconds: int) -> str:
