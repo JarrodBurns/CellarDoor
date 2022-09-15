@@ -4,21 +4,22 @@ The intent of this application is to provide a low fluff file backup tool capabl
 # TO DO
 - [X] [Record and Display Stats](#record-and-display-stats)
 - [X] Relative imports
+- [X] **WNI** [Multi-Process Zip Operations](#multi-process-zip-operations)
 - [ ] Logging
 - [ ] Update configs to YAML
 - [ ] [Windows Task Scheduler](#windows-task-scheduler)
 - [ ] Allow user to backup multiple directories
-- [ ] Multi process the zip operation to increase speed
+- [ ] % progress bar
 
 ## Fixes
 - [X] Incorporate new datetime constants/rewrite parser logic
-- [X] UI stats, str conversion necessary?
+- [X] UI stats, str conversion necessary? No.
 - [ ] All file ops should check/create/error
 
 ## Reading list
 - [X] [ZipFile](https://docs.python.org/3/library/zipfile.html?highlight=zipfile#module-zipfile)
 - [X] [Pathlib - Modern Paths in Python](https://docs.python.org/3/library/pathlib.html?highlight=pathlib#module-pathlib)
-- [X] [Loggging](https://docs.python.org/3/library/logging.html)
+- [X] [Logging](https://docs.python.org/3/library/logging.html)
 - [ ] [Logging Config File](https://docs.python.org/3/library/logging.config.html#module-logging.config)
 - [ ] [YAML](https://realpython.com/python-yaml/)
 - [ ] [XML Processing Modules](https://docs.python.org/3/library/xml.html?highlight=xml#module-xml)
@@ -37,3 +38,9 @@ After conducting more investigation, it seems the best way to interact with the 
 - Cumulative size of files managed 
 
 - Files deleted
+
+## Multi-Process Zip Operations
+The following articles highlight different threading and multi-processing operations for zip and unzip. The TLDR is that these methods offer no significant increase in processing time for **zipping** operations. This is due to the fact that only one file can be read in at a time. It is worth mentioning that **Unzipping** operations can see a 4x speed increase when multi-threaded and multi-processed. This app is not concerned with extracting archives and thusly will not implement this feature.
+
+- [Multi-threaded Unzip Files](https://superfastpython.com/multithreaded-unzip-files/)
+- [Multi-threaded Zip Files](https://superfastpython.com/multithreaded-zip-files/)
