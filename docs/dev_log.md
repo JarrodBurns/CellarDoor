@@ -31,13 +31,10 @@ So far I have written some logic to handle scheduling windows tasks programmatic
 ### Windows Task Scheduler Update 12 Sep 2022
 After conducting more investigation, it seems the best way to interact with the Task Scheduler is through an XML file. In development, this file can be pulled down from an existing task. The idea then is to generate this XML dynamically, in application if the config has changed and then save and pass that data on to the WTS.
 
-
 ## Record and Display Stats
 - Time spent archiving
 - Number of backups created
 - Cumulative size of files managed 
-
-- Files deleted
 
 ## Multi-Process Zip Operations
 The following articles highlight different threading and multi-processing operations for zip and unzip. The TLDR is that these methods offer no significant increase in processing time for **zipping** operations. This is due to the fact that only one file can be read in at a time. It is worth mentioning that **Unzipping** operations can see a 4x speed increase when multi-threaded and multi-processed. This app is not concerned with extracting archives and thusly will not implement this feature.
