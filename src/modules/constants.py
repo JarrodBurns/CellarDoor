@@ -16,7 +16,8 @@ STATS_PATH = DATA_DIR.joinpath("stats.json")
 
 SETTINGS = filemanager.get_json(SETTINGS_PATH)
 SRC = Path(SETTINGS["APP"]["SOURCE"])
-DST = Path(SETTINGS["APP"]["DESTINATION"]).mkdir(parents=True, exist_ok=True)
+DST = Path(SETTINGS["APP"]["DESTINATION"])
+DST.mkdir(parents=True, exist_ok=True)
 ARCHIVE_DST = filemanager.get_archive_dst(SRC, DST)
 
 MAX_BACKUPS = SETTINGS["APP"]["MAX_BACKUPS"]
