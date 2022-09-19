@@ -3,87 +3,85 @@ from math import prod
 import re
 
 
-class Clock:
+__CLOCK_MULTIPLES = [86_400, 3_600, 60, 1]
+__CLOCK_INTERVALS = ["day", "hour", "minute", "second"]
 
-    __CLOCK_MULTIPLES = [86_400, 3_600, 60, 1]
-    __CLOCK_INTERVALS = ["day", "hour", "minute", "second"]
 
-    @staticmethod
-    def __clock_segments(seconds: int) -> tuple:
+def __clock_segments(seconds: int) -> tuple:
 
-        minutes, seconds = divmod(seconds, 60)
-        hours, minutes = divmod(minutes, 60)
-        days, hours = divmod(hours, 24)
+    minutes, seconds = divmod(seconds, 60)
+    hours, minutes = divmod(minutes, 60)
+    days, hours = divmod(hours, 24)
 
-        return days, hours, minutes, seconds
+    return days, hours, minutes, seconds
 
-    @staticmethod
-    def __parse_clock(clock: str) -> list:
 
-        search = re.findall(r"[0-9]+", clock)
+def __parse_clock(clock: str) -> list:
 
-        parts = [int(i) for i in search]
+    search = re.findall(r"[0-9]+", clock)
 
-        while len(parts) < 4:
+    parts = [int(i) for i in search]
 
-            parts.insert(0, 0)
+    while len(parts) < 4:
 
-        return parts
+        parts.insert(0, 0)
 
-    @classmethod
-    def clock_from_seconds(cls, seconds: int) -> str:
-        """
-        Example output: 1 hours, 16 minutes, and 9 seconds
-        Example output: 9 seconds
-        """
-        if seconds < 1:
-            return "None"
+    return parts
 
-        # Zip clock values and intervals for safer processing
-        values = [
-            list(i)
-            for i
-            in zip(cls.__clock_segments(seconds), cls.__CLOCK_INTERVALS)
-        ]
 
-        # Convert interval to plural
-        for pos, value in enumerate(values):
+def from_seconds(seconds: int) -> str:
+    """
+    Example output: 1 hours, 16 minutes, and 9 seconds
+    Example output: 9 seconds
+    """
+    if seconds < 1:
+        return "None"
 
-            if value[0] != 1:
+    # Zip clock values and intervals for safer processing
+    values = [
+        list(i)
+        for i
+        in zip(__clock_segments(seconds), __CLOCK_INTERVALS)
+    ]
 
-                values[pos][1] += "s"
+    # Convert interval to plural
+    for pos, value in enumerate(values):
 
-        # Format to strings
-        clock = [
-            " ".join([str(i[0]), i[1]])
-            for i
-            in values
-            if i[0]
-        ]
+        if value[0] != 1:
 
-        # Check if "and" is needed
-        if len(clock) > 1:
-            clock.insert(-1, "and")
+            values[pos][1] += 's'
 
-        # Add the commas; this format employs the oxford comma.
-        if "and" in clock and len(clock) > 3:
-            for i, _ in enumerate(clock[:-2]):
-                clock[i] += ","
+    # Format to strings
+    clock = [
+        ' '.join([str(i[0]), i[1]])
+        for i
+        in values
+        if i[0]
+    ]
 
-        return ' '.join(clock)
+    # Check if "and" is needed
+    if len(clock) > 1:
+        clock.insert(-1, "and")
 
-    @classmethod
-    def clock_to_seconds(cls, clock: str) -> int:
-        """
-        Example output: 1 hours, 16 minutes, and 9 seconds
-        Example output: 9 seconds
-        """
-        seconds = 0
+    # Add the commas; this format employs the oxford comma.
+    if "and" in clock and len(clock) > 3:
+        for i, _ in enumerate(clock[:-2]):
+            clock[i] += ','
 
-        for i in zip(cls.__CLOCK_MULTIPLES, cls.__parse_clock(clock)):
-            seconds += prod(i)
+    return ' '.join(clock)
 
-        return seconds
+
+def to_seconds(clock: str) -> int:
+    """
+    Example intput: 1 hours, 16 minutes, and 9 seconds
+    Example output: 9 seconds
+    """
+    seconds = 0
+
+    for i in zip(__CLOCK_MULTIPLES, __parse_clock(clock)):
+        seconds += prod(i)
+
+    return seconds
 
 
 def main() -> None:
