@@ -1,51 +1,44 @@
 
+from dataclasses import dataclass, astuple
 from datetime import datetime
 from pathlib import Path
 from typing import Optional
 from zipfile import ZipFile, ZIP_DEFLATED
 
 
-def police_backup_files(archive_dir: Path, max_backups: int) -> None:
-    """
-    Removes files from a given directory until it aligns with the
-    quantity specified by max_backups.
+@dataclass
+class FileSize:
+    size: float
+    scale: str
 
-    Files which do not begin with the expected datetime format
-    will be overlooked.
+    def __str__(self):
+        return f"{self.size} {self.scale}"
 
-    Expected Datetime Format: "2022-07-07--22-13-12_"
-
-    Sort order: Oldest first
-    """
-    n = "[0-9]" * 2
-    pattern = f"**/{n * 2}-{n}-{n}--{n}-{n}-{n}_*"
-    archives = list(archive_dir.glob(pattern))
-
-    while len(archives) > max_backups:
-
-        oldest_archive = min(archives)
-        oldest_archive.unlink()
-        archives.remove(oldest_archive)
+    def __iter__(self):
+        return iter(astuple(self))
 
 
-def _progress_report(
-    current_progress: float,
-    file_path: Path,
-    minify_path: bool = True
-) -> str:
-    """
-    Example Out: [=====-----][ 50.0%  ] -- "C:/Users/.../my_dir/my_file.txt"
-    """
-    fill_percent = int(current_progress // 10)
-    progress_bar = f"[{'=' * fill_percent}{'-' * (10 - fill_percent)}]"
+def scale_bytes(
+    size_in_bytes: int,
+    size_format: str = "gb",
+    rounding_precision: int = 2
+) -> FileSize:
 
-    truncate_progress = f"{current_progress:.1f}%"
-    progress_percent = f"[{truncate_progress:^8}]"
+    scales = {
+        "kb": 1,
+        "mb": 2,
+        "gb": 3,
+        "tb": 4,
+    }
 
-    if minify_path:
-        file_path = minify_path(file_path)
+    if size_format not in scales.keys():
 
-    return f"{progress_bar}{progress_percent} -- {file_path}"
+        raise ValueError(f"Invalid mode: '{size_format}'")
+
+    converted_size = size_in_bytes / (1024 ** scales[size_format])
+    converted_size = round(converted_size, rounding_precision)
+
+    return FileSize(converted_size, size_format)
 
 
 def minify_path(path_to_shorten: Path) -> Path:
@@ -66,6 +59,7 @@ def minify_path(path_to_shorten: Path) -> Path:
 
 class ZipIt:
 
+    ERASE_LINE = "\x1b[2K"
     FMT_DATETIME = "%Y-%m-%d--%H-%M-%S"
 
     def __init__(self, dir_to_zip: Path, user_backup_path: Path):
@@ -77,7 +71,27 @@ class ZipIt:
         self.zipfile_name: Path = self._create_zipfile_name()
 
         self.stopwatch: Optional[datetime] = None
-        self.file_size: Optional[int] = None
+        self.file_size: Optional[FileSize] = None
+
+    @staticmethod
+    def _progress_report(
+        current_progress: float,
+        file_path: Path,
+        tiny_path: bool = True
+    ) -> str:
+        """
+        Example Out: [=====-----][ 50.0%  ] -- "C:/Users/.../my_dir/my_file.txt"
+        """
+        fill_percent = int(current_progress // 10)
+        progress_bar = f"[{'=' * fill_percent}{'-' * (10 - fill_percent)}]"
+
+        truncate_progress = f"{current_progress:.1f}%"
+        progress_percent = f"[{truncate_progress:^8}]"
+
+        if tiny_path:
+            file_path = minify_path(file_path)
+
+        return f"{progress_bar}{progress_percent} -- {file_path}"
 
     def _create_zipfile_dir(self) -> Path:
         """
@@ -119,29 +133,18 @@ class ZipIt:
 
                 current_progress += progress_increment
 
-                print(_progress_report(current_progress, file), end='\r', flush=True)
+                print(
+                    self._progress_report(current_progress, file),
+                    end='\r', flush=True
+                )
+
+            # Success statement; 95 provides wiggle room for pesky float values.
+            if current_progress > 95:
+
+                print(self.ERASE_LINE, end='\r', flush=True)
+                print(self._progress_report(100, self.dir_to_zip), flush=True)
 
         self.stopwatch = datetime.now() - self.stopwatch
-        self.file_size = self.zipfile_name.stat().st_size
+        self.file_size = scale_bytes(self.zipfile_name.stat().st_size)
 
         return self
-
-
-if __name__ == "__main__":
-
-    cwd = Path().cwd()
-
-    paths = [
-        cwd.joinpath("t1"),
-        cwd.joinpath("t2"),
-        cwd.joinpath("t3")
-    ]
-
-    backup_path = cwd.joinpath("backups")
-
-    for i in paths:
-
-        # j = ZipIt(i, backup_path).zip_dir()
-        # print(j.stopwatch, j.file_size)
-        # police_backup_files(j.zipfile_dir, 5)
-        print()

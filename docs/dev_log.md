@@ -14,7 +14,7 @@ The intent of this application is to provide a low fluff file backup tool capabl
 ## Fixes
 - [X] Incorporate new datetime constants/rewrite parser logic
 - [X] UI stats, str conversion necessary? No.
-- [ ] All file ops should check/create/error
+- [X] All file ops should check/create/error
 
 ## Reading list
 - [X] [ZipFile](https://docs.python.org/3/library/zipfile.html?highlight=zipfile#module-zipfile)
