@@ -13,7 +13,7 @@ def main() -> None:
     ui.draw_console()
     ui.print_header(C.APP_NAME, C.SETTINGS)
 
-    for path in C.SRC:
+    for path in C.SOURCE:
 
         archive = zipit.ZipIt(Path(path), C.DST).zip_dir()
 

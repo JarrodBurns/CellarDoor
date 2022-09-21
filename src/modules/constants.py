@@ -15,7 +15,7 @@ SETTINGS_PATH = DATA_DIR.joinpath("settings.json")
 STATS_PATH = DATA_DIR.joinpath("stats.json")
 
 SETTINGS = filemanager.get_settings(SETTINGS_PATH)
-SRC = SETTINGS["APP"]["SOURCE"]
+SOURCE = SETTINGS["APP"]["SOURCE"]
 DST = Path(SETTINGS["APP"]["DESTINATION"])
 
 MAX_BACKUPS = SETTINGS["APP"]["MAX_BACKUPS"]

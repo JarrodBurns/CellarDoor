@@ -64,16 +64,17 @@ class ZipIt:
         final_report: bool = False
     ) -> str:
         """
-        Example Out: [=====-----][ 50.0%  ] -- "C:/Users/.../my_dir/my_file.txt"
+        If final_report is set to true the parent directory will be returned
+        in place of the file name.
+
+        Example Out: [=====-----][ 50.0%   ] -- "my_file.txt"
+        Example Out: [==========][ 100.0%  ] -- "C:/Users/usr/my_dir"
         """
         fill_percent = int(current_progress // 10)
         progress_bar = f"[{'=' * fill_percent}{'-' * (10 - fill_percent)}]"
 
         truncate_progress = f"{current_progress:.1f}%"
         progress_percent = f"[{truncate_progress:^8}]"
-
-        # if tiny_path:
-        #     file_path = minify_path(file_path)
 
         if final_report:
 
@@ -142,3 +143,7 @@ class ZipIt:
         self.file_size = scale_bytes(self.zipfile_name.stat().st_size)
 
         return self
+
+
+if __name__ == "__main__":
+    pass
