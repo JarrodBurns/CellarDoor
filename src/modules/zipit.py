@@ -11,11 +11,11 @@ class FileSize:
     size: float
     scale: str
 
-    def __str__(self):
-        return f"{self.size} {self.scale}"
-
     def __iter__(self):
         return iter(astuple(self))
+
+    def __str__(self):
+        return f"{self.size} {self.scale}"
 
 
 def scale_bytes(
@@ -41,22 +41,6 @@ def scale_bytes(
     return FileSize(converted_size, size_format)
 
 
-def minify_path(path_to_shorten: Path) -> Path:
-    """
-    Shortens file paths for display purposes. Only the first and last two
-    directories/files are shown, the rest are replaced with "..."
-
-    Example Out: "C:/Users/.../my_dir/my_file.txt"
-    """
-    parts = path_to_shorten.parts
-
-    if len(parts) < 4:
-
-        return path_to_shorten
-
-    return Path().joinpath(*parts[:2], "...", *parts[-2:])
-
-
 class ZipIt:
 
     ERASE_LINE = "\x1b[2K"
@@ -77,7 +61,7 @@ class ZipIt:
     def _progress_report(
         current_progress: float,
         file_path: Path,
-        tiny_path: bool = True
+        final_report: bool = False
     ) -> str:
         """
         Example Out: [=====-----][ 50.0%  ] -- "C:/Users/.../my_dir/my_file.txt"
@@ -88,10 +72,14 @@ class ZipIt:
         truncate_progress = f"{current_progress:.1f}%"
         progress_percent = f"[{truncate_progress:^8}]"
 
-        if tiny_path:
-            file_path = minify_path(file_path)
+        # if tiny_path:
+        #     file_path = minify_path(file_path)
 
-        return f"{progress_bar}{progress_percent} -- {file_path}"
+        if final_report:
+
+            return f"{progress_bar}{progress_percent} -- {file_path}"
+
+        return f"{progress_bar}{progress_percent} -- {file_path.name}"
 
     def _create_zipfile_dir(self) -> Path:
         """
@@ -138,11 +126,17 @@ class ZipIt:
                     end='\r', flush=True
                 )
 
-            # Success statement; 95 provides wiggle room for pesky float values.
-            if current_progress > 95:
+            # Success statement; 98 provides wiggle room for pesky float values.
+            if current_progress > 98:
 
                 print(self.ERASE_LINE, end='\r', flush=True)
-                print(self._progress_report(100, self.dir_to_zip), flush=True)
+                print(
+                    self._progress_report(
+                        100,
+                        self.dir_to_zip,
+                        final_report=True
+                    ),
+                    flush=True)
 
         self.stopwatch = datetime.now() - self.stopwatch
         self.file_size = scale_bytes(self.zipfile_name.stat().st_size)

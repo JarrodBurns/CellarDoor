@@ -5,18 +5,6 @@ from typing import Any
 import json
 
 
-def backup_made_today(archive_dir: Path, date_fmt: str = "%Y-%m-%d") -> bool:
-    """
-    Enumerates the given directory for a file name beginning
-    with today's date. A bool is returned to reflect the results.
-    """
-    if list(archive_dir.glob(f"**/{datetime.now():{date_fmt}}*")):
-
-        print("[E] Backup already exists for today!\n")
-
-        return True
-
-
 def police_backup_files(archive_dir: Path, max_backups: int) -> None:
     """
     Removes files from a given directory until it aligns with the
@@ -47,7 +35,7 @@ def get_settings(src: Path) -> dict[str, Any]:
             "DESTINATION": "C:\\backups",
             "GO_TIME": "20:00",
             "MAX_BACKUPS": 5,
-            "SOURCE": "C:\\Users"
+            "SOURCE": ["C:\\Users"]
         }
     }
 

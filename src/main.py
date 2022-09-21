@@ -13,14 +13,12 @@ def main() -> None:
     ui.draw_console()
     ui.print_header(C.APP_NAME, C.SETTINGS)
 
-    # if not filemanager.backup_made_today(C.DST, C.FMT_DATE):
+    for path in C.SOURCES:
 
-    for path in C.SRC:
+        archive = zipit.ZipIt(Path(path), C.DST).zip_dir()
 
-        j = zipit.ZipIt(Path(path), C.DST).zip_dir()
-
-        filemanager.update_stats(C.STATS_PATH, j.file_size.size, j.stopwatch)
-        filemanager.police_backup_files(j.zipfile_dir, C.MAX_BACKUPS)
+        filemanager.update_stats(C.STATS_PATH, archive.file_size.size, archive.stopwatch)
+        filemanager.police_backup_files(archive.zipfile_dir, C.MAX_BACKUPS)
 
     ui.print_stats_all_time(filemanager.get_stats(C.STATS_PATH))
     ui.print_footer()
