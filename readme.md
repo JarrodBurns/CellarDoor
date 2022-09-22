@@ -11,7 +11,7 @@ Navigate to **CellarDoor > Data > settings.json** and populate all values
 | DESTINATION | Where to save your backups too                      |
 | GO_TIME     | When you want the script to run                     |
 | MAX_BACKUPS | How many backups to create before deleting old ones |
-| SOURCE      | The directory you want to backup                    |
+| SOURCE      | The directories you want to backup                  |
 
 ## Automatic Backups
 In order for CellarDoor to execute daily, a task must be created in Windows Task Scheduler. If you haven't done this sort of thing before checkout [this guide](https://www.technipages.com/scheduled-task-windows) to get started.
