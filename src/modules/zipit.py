@@ -127,8 +127,8 @@ class ZipIt:
                     end='\r', flush=True
                 )
 
-            # Success statement; 98 provides wiggle room for pesky float values.
-            if current_progress > 98:
+            # Success statement; 99 provides wiggle room for pesky float values.
+            if current_progress > 99:
 
                 print(self.ERASE_LINE, end='\r', flush=True)
                 print(

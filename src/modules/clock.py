@@ -3,11 +3,11 @@ from math import prod
 import re
 
 
-__CLOCK_MULTIPLES = [86_400, 3_600, 60, 1]
-__CLOCK_INTERVALS = ["day", "hour", "minute", "second"]
+_CLOCK_MULTIPLES = [86_400, 3_600, 60, 1]
+_CLOCK_INTERVALS = ["day", "hour", "minute", "second"]
 
 
-def __clock_segments(seconds: int) -> tuple:
+def _clock_segments(seconds: int) -> tuple:
 
     minutes, seconds = divmod(seconds, 60)
     hours, minutes = divmod(minutes, 60)
@@ -16,7 +16,7 @@ def __clock_segments(seconds: int) -> tuple:
     return days, hours, minutes, seconds
 
 
-def __parse_clock(clock: str) -> list:
+def _parse_clock(clock: str) -> list:
 
     search = re.findall(r"[0-9]+", clock)
 
@@ -41,7 +41,7 @@ def from_seconds(seconds: int) -> str:
     values = [
         list(i)
         for i
-        in zip(__clock_segments(seconds), __CLOCK_INTERVALS)
+        in zip(_clock_segments(seconds), _CLOCK_INTERVALS)
     ]
 
     # Convert interval to plural
@@ -78,7 +78,7 @@ def to_seconds(clock: str) -> int:
     """
     seconds = 0
 
-    for i in zip(__CLOCK_MULTIPLES, __parse_clock(clock)):
+    for i in zip(_CLOCK_MULTIPLES, _parse_clock(clock)):
         seconds += prod(i)
 
     return seconds
