@@ -4,6 +4,10 @@ from datetime import datetime
 from pathlib import Path
 from typing import Optional
 from zipfile import ZipFile, ZIP_DEFLATED
+import logging
+
+
+log = logging.getLogger(__name__)
 
 
 @dataclass

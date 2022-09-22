@@ -3,6 +3,10 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 import json
+import logging
+
+
+log = logging.getLogger(__name__)
 
 
 def police_backup_files(archive_dir: Path, max_backups: int) -> None:
