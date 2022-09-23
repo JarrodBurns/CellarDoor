@@ -3,6 +3,10 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 import json
+import logging
+
+
+log = logging.getLogger(__name__)
 
 
 def police_backup_files(archive_dir: Path, max_backups: int) -> None:
@@ -27,6 +31,8 @@ def police_backup_files(archive_dir: Path, max_backups: int) -> None:
         oldest_archive.unlink()
         archives.remove(oldest_archive)
 
+        log.info("Deleted file: %s", oldest_archive)
+
 
 def get_settings(src: Path) -> dict[str, Any]:
 
@@ -42,6 +48,8 @@ def get_settings(src: Path) -> dict[str, Any]:
     if not src.exists():
 
         set_json(src, fallback)
+
+        log.warn("Source file not found, using fallback.")
 
     return get_json(src)
 
@@ -60,21 +68,35 @@ def get_stats(src: Path) -> dict[str, Any]:
 
         set_json(src, fallback)
 
+        log.warn("Source file not found, using fallback.")
+
     return get_json(src)
 
 
 def get_json(src: Path) -> dict[str, Any]:
 
-    with open(src, 'r') as file_handle:
+    try:
 
-        return json.load(file_handle)
+        with open(src, 'r') as file_handle:
+
+            return json.load(file_handle)
+
+    except FileNotFoundError as e:
+
+        log.exception(e)
 
 
 def set_json(src: Path, json_to_write: dict[str, Any]) -> None:
 
-    with open(src, 'w') as file_handle:
+    try:
 
-        json.dump(json_to_write, file_handle, indent=4)
+        with open(src, 'w') as file_handle:
+
+            json.dump(json_to_write, file_handle, indent=4)
+
+    except FileNotFoundError as e:
+
+        log.exception(e)
 
 
 def update_stats(
@@ -84,7 +106,7 @@ def update_stats(
     executions: int = 1
 ) -> None:
 
-    all_time = get_settings(json_path)
+    all_time = get_stats(json_path)
 
     all_time["stats"]["data_transacted"][0] += file_size
     all_time["stats"]["executions"] += executions

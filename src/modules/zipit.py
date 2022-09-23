@@ -4,6 +4,10 @@ from datetime import datetime
 from pathlib import Path
 from typing import Optional
 from zipfile import ZipFile, ZIP_DEFLATED
+import logging
+
+
+log = logging.getLogger(__name__)
 
 
 @dataclass
@@ -111,6 +115,8 @@ class ZipIt:
             self.zipfile_name, 'w', allowZip64=True, compression=ZIP_DEFLATED
         ) as archive:
 
+            log.info("Archive construction started for: %s", self.dir_to_zip)
+
             # Loads all files into memory, could be slow for large archives
             files_to_zip = list(self.dir_to_zip.rglob('*'))
 
@@ -127,8 +133,8 @@ class ZipIt:
                     end='\r', flush=True
                 )
 
-            # Success statement; 99 provides wiggle room for pesky float values.
-            if current_progress > 99:
+            # Success statement; 99.6 provides wiggle room for pesky float values.
+            if current_progress > 99.6:
 
                 print(self.ERASE_LINE, end='\r', flush=True)
                 print(
@@ -141,6 +147,8 @@ class ZipIt:
 
         self.stopwatch = datetime.now() - self.stopwatch
         self.file_size = scale_bytes(self.zipfile_name.stat().st_size)
+
+        log.info("Archive construction completed for: %s", self.dir_to_zip)
 
         return self
 
