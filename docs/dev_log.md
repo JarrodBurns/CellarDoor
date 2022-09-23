@@ -8,7 +8,7 @@ The intent of this application is to provide a low fluff file backup tool capabl
 - [X] Allow user to backup multiple directories
 - [X] % progress bar
 - [X] **WNI** [Update configs to YAML](#yaml-configs)
-- [ ] Logging
+- [X] Logging
 - [ ] [Windows Task Scheduler](#windows-task-scheduler)
 
 ## Fixes
@@ -28,7 +28,7 @@ The intent of this application is to provide a low fluff file backup tool capabl
 - [X] [Pathlib - Modern Paths in Python](https://docs.python.org/3/library/pathlib.html?highlight=pathlib#module-pathlib)
 - [X] [Logging](https://docs.python.org/3/library/logging.html)
 - [X] [Logging Config File](https://docs.python.org/3/library/logging.config.html#module-logging.config)
-- [ ] [YAML](https://realpython.com/python-yaml/)
+- [X] [YAML](https://realpython.com/python-yaml/)
 - [ ] [XML Processing Modules](https://docs.python.org/3/library/xml.html?highlight=xml#module-xml)
 - [ ] [Task Scheduler Schema](https://docs.microsoft.com/en-us/windows/win32/taskschd/task-scheduler-schema)
 
