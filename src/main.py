@@ -17,6 +17,12 @@ def main() -> None:
     ui.draw_console()
     ui.print_header(C.APP_NAME, C.SETTINGS)
 
+    if not isinstance(C.SOURCE, list):
+
+        log.error("Expected list like object; got: %s", type(C.SOURCE))
+
+        raise KeyError
+
     for path in C.SOURCE:
 
         archive = zipit.ZipIt(Path(path), C.DST).zip_dir()
