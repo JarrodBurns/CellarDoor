@@ -13,7 +13,7 @@ import modules.zipit as zipit
 def main() -> None:
 
     log = logging.getLogger(__name__)
-    log.info("CellarDoor Main Started")
+    log.info("CellarDoor Started")
 
     ui.draw_console()
     ui.print_header(C.APP_NAME, C.SETTINGS)
@@ -28,7 +28,7 @@ def main() -> None:
     ui.print_stats_all_time(filemanager.get_stats(C.STATS_PATH))
     ui.print_footer()
 
-    log.info("CellarDoor Main Completed")
+    log.info("CellarDoor Completed")
 
 
 if __name__ == "__main__":
