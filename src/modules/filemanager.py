@@ -115,6 +115,15 @@ def update_stats(
     set_json(json_path, all_time)
 
 
+def validate_source_list(source: Path):
+
+    if not isinstance(source, list):
+
+        log.error("Expected list like object; got: %s", type(source))
+
+        raise KeyError(f"Expected list like object; got: {type(source)}")
+
+
 def main() -> None:
     pass
 

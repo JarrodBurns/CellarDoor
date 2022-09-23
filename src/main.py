@@ -11,17 +11,12 @@ import modules.zipit as zipit
 
 def main() -> None:
 
-    log = logging.getLogger(__name__)
     log.info("CellarDoor Started")
 
     ui.draw_console()
     ui.print_header(C.APP_NAME, C.SETTINGS)
 
-    if not isinstance(C.SOURCE, list):
-
-        log.error("Expected list like object; got: %s", type(C.SOURCE))
-
-        raise KeyError
+    filemanager.validate_source_list(C.SOURCE)
 
     for path in C.SOURCE:
 
@@ -37,6 +32,8 @@ def main() -> None:
 
 
 if __name__ == "__main__":
+
+    log = logging.getLogger(__name__)
 
     main()
     time.sleep(10)

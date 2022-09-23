@@ -4,33 +4,35 @@ import logging
 import logging.config
 
 
-LOGS_DIR = Path().cwd().parent.joinpath("logs")
-LOGS_CONFIG = LOGS_DIR.joinpath("config", "logging.config")
+LOG_DIR = Path().cwd().parent.joinpath("logs")
+LOG_CONFIG = LOG_DIR.joinpath("config", "logging.config")
+LOG_FILE_PATH = repr(str(LOG_DIR.joinpath("cellardoor.log")))
+CONFIG_PATH_ARGS = f"args=({LOG_FILE_PATH}, 'a')"
 
 
-def update_log_save_location(logs_dir: Path) -> None:
+def update_log_save_location(log_config: Path, config_path_args: str) -> None:
+    """
+    Checks the filehandler path in the log config and updates
+    the value based on the current working dir of the project file.
+    """
+    out = ""
 
-    log_save_file = logs_dir.joinpath("cellardoor.log")
-    log_config_file = logs_dir.joinpath("config", "logging.config")
+    with open(log_config, "r+") as file_handle:
 
-    replacement = ""
-    replace_statment = f"args=({repr(str(log_save_file))}, 'a')"
+        file_content = file_handle.read().rstrip()
 
-    with open(log_config_file, 'r') as file_handle:
-
-        for line in file_handle:
-
-            line = line.strip()
+        for line in file_content.split('\n'):
 
             if line.startswith("args") and ".log" in line:
 
-                line = line.replace(line, replace_statment)
+                line = line.replace(line, config_path_args)
 
-            replacement += line + '\n'
+            out += line + '\n'
 
-    with open(log_config_file, 'w') as file_handle:
-        file_handle.write(replacement)
+        file_handle.seek(0)
+        file_handle.write(out)
+        file_handle.truncate()
 
 
-update_log_save_location(LOGS_DIR)
-logging.config.fileConfig(LOGS_CONFIG)
+update_log_save_location(LOG_CONFIG, CONFIG_PATH_ARGS)
+logging.config.fileConfig(LOG_CONFIG)
