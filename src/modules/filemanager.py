@@ -9,6 +9,70 @@ import logging
 log = logging.getLogger(__name__)
 
 
+def _get_json(src: Path) -> dict[str, Any]:
+
+    try:
+
+        with open(src, 'r') as file_handle:
+
+            return json.load(file_handle)
+
+    except FileNotFoundError as e:
+
+        log.exception(e)
+
+
+def _set_json(src: Path, json_to_write: dict[str, Any]) -> None:
+
+    try:
+
+        with open(src, 'w') as file_handle:
+
+            json.dump(json_to_write, file_handle, indent=4)
+
+    except FileNotFoundError as e:
+
+        log.exception(e)
+
+
+def _get_or_set_json(src: Path, fallback: dict[str, Any]) -> dict[str, Any]:
+
+    if not src.exists():
+
+        _set_json(src, fallback)
+
+        log.warn("Source file not found, using fallback. Expected: %s", src)
+
+    return _get_json(src)
+
+
+def get_settings(src: Path) -> dict[str, Any]:
+
+    fallback = {
+        "APP": {
+            "DESTINATION": "C:\\backups",
+            "GO_TIME": "20:00",
+            "MAX_BACKUPS": 5,
+            "SOURCE": ["C:\\Users"]
+        }
+    }
+
+    return _get_or_set_json(src, fallback)
+
+
+def get_stats(src: Path) -> dict[str, Any]:
+
+    fallback = {
+        "stats": {
+            "data_transacted": [0.0, "gb"],
+            "executions": 0,
+            "work_time": 0
+        }
+    }
+
+    return _get_or_set_json(src, fallback)
+
+
 def police_backup_files(archive_dir: Path, max_backups: int) -> None:
     """
     Removes files from a given directory until it aligns with the
@@ -34,71 +98,6 @@ def police_backup_files(archive_dir: Path, max_backups: int) -> None:
         log.info("Deleted file: %s", oldest_archive)
 
 
-def get_settings(src: Path) -> dict[str, Any]:
-
-    fallback = {
-        "APP": {
-            "DESTINATION": "C:\\backups",
-            "GO_TIME": "20:00",
-            "MAX_BACKUPS": 5,
-            "SOURCE": ["C:\\Users"]
-        }
-    }
-
-    if not src.exists():
-
-        set_json(src, fallback)
-
-        log.warn("Source file not found, using fallback.")
-
-    return get_json(src)
-
-
-def get_stats(src: Path) -> dict[str, Any]:
-
-    fallback = {
-        "stats": {
-            "data_transacted": [0.0, "gb"],
-            "executions": 0,
-            "work_time": 0
-        }
-    }
-
-    if not src.exists():
-
-        set_json(src, fallback)
-
-        log.warn("Source file not found, using fallback.")
-
-    return get_json(src)
-
-
-def get_json(src: Path) -> dict[str, Any]:
-
-    try:
-
-        with open(src, 'r') as file_handle:
-
-            return json.load(file_handle)
-
-    except FileNotFoundError as e:
-
-        log.exception(e)
-
-
-def set_json(src: Path, json_to_write: dict[str, Any]) -> None:
-
-    try:
-
-        with open(src, 'w') as file_handle:
-
-            json.dump(json_to_write, file_handle, indent=4)
-
-    except FileNotFoundError as e:
-
-        log.exception(e)
-
-
 def update_stats(
     json_path: Path,
     file_size: float,
@@ -112,7 +111,7 @@ def update_stats(
     all_time["stats"]["executions"] += executions
     all_time["stats"]["work_time"] += stopwatch.seconds
 
-    set_json(json_path, all_time)
+    _set_json(json_path, all_time)
 
 
 def validate_source_list(source: Path):

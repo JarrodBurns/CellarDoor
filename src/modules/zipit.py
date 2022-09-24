@@ -86,6 +86,23 @@ class ZipIt:
 
         return f"{progress_bar}{progress_percent} -- {file_path.name}"
 
+    def _progress_report_final(self, current_progress: float) -> None:
+
+        if current_progress < 99:  # Wiggle room for pesky floats.
+
+            log.warn("Expected progress to be > 99; got: %f", current_progress)
+
+            return
+
+        print(self.ERASE_LINE, end='\r', flush=True)
+        print(
+            self._progress_report(
+                100,
+                self.dir_to_zip,
+                final_report=True
+            ),
+            flush=True)
+
     def _create_zipfile_dir(self) -> Path:
         """
         Example In: C:/my_dir               # Directory to backup
@@ -106,49 +123,43 @@ class ZipIt:
 
         return self.zipfile_dir.joinpath(zipfile_name)
 
+    def _construct_archive(self, archive: ZipFile) -> None:
+
+        # Loads all files into memory, could be slow for large archives
+        files_to_zip = list(self.dir_to_zip.rglob('*'))
+
+        current_progress = 0
+        progress_increment = 100 / len(files_to_zip)
+
+        for file in files_to_zip:
+
+            archive.write(file, arcname=file.relative_to(self.dir_to_zip))
+
+            current_progress += progress_increment
+
+            print(
+                self._progress_report(current_progress, file),
+                end='\r', flush=True
+            )
+
+        self._progress_report_final(current_progress)
+
     def zip_dir(self) -> ZipFile:
 
         self.stopwatch = datetime.now()
-        current_progress = 0
+
+        log.info("Archive construction started for: %s", self.dir_to_zip)
 
         with ZipFile(
             self.zipfile_name, 'w', allowZip64=True, compression=ZIP_DEFLATED
         ) as archive:
 
-            log.info("Archive construction started for: %s", self.dir_to_zip)
+            self._construct_archive(archive)
 
-            # Loads all files into memory, could be slow for large archives
-            files_to_zip = list(self.dir_to_zip.rglob('*'))
-
-            progress_increment = 100 / len(files_to_zip)
-
-            for file in files_to_zip:
-
-                archive.write(file, arcname=file.relative_to(self.dir_to_zip))
-
-                current_progress += progress_increment
-
-                print(
-                    self._progress_report(current_progress, file),
-                    end='\r', flush=True
-                )
-
-            # Success statement; 99.6 provides wiggle room for pesky float values.
-            if current_progress > 99.6:
-
-                print(self.ERASE_LINE, end='\r', flush=True)
-                print(
-                    self._progress_report(
-                        100,
-                        self.dir_to_zip,
-                        final_report=True
-                    ),
-                    flush=True)
+        log.info("Archive construction completed for: %s", self.dir_to_zip)
 
         self.stopwatch = datetime.now() - self.stopwatch
         self.file_size = scale_bytes(self.zipfile_name.stat().st_size)
-
-        log.info("Archive construction completed for: %s", self.dir_to_zip)
 
         return self
 

@@ -15,6 +15,23 @@ def draw_console() -> None:
     os.system(f"mode con cols={CONSOLE_WIDTH} lines={CONSOLE_HEIGHT}")
 
 
+def _print_source_directories(src_dirs: list[str, ...]) -> None:
+
+    if len(src_dirs) == 1:
+
+        print(f"[!] Backup this directory:  {src_dirs[0]}\n\n")
+
+        return
+
+    print("[!] Backup these directories:")
+
+    for directory in src_dirs:
+
+        print(f"    [&] {directory}")
+
+    print()
+
+
 def print_header(
     app_name: str,
     json_obj: dict[str, Any],
@@ -33,21 +50,8 @@ def print_header(
         f"[!] Save backup to:  {json_obj['APP']['DESTINATION']}"
     )
 
-    directories_to_backup = json_obj['APP']['SOURCE']
+    _print_source_directories(json_obj['APP']['SOURCE'])
 
-    if len(directories_to_backup) > 1:
-
-        print("[!] Backup these directories:")
-
-        for directory in directories_to_backup:
-
-            print(f"    [&] {directory}")
-
-    else:
-
-        print(f"[!] Backup this directory:  {directories_to_backup[0]}\n")
-
-    print()
     print('.' * CONSOLE_WIDTH, end="\n\n")
 
 
@@ -55,11 +59,6 @@ def print_footer(fill_char: str = '#') -> None:
 
     fill = fill_char * CONSOLE_WIDTH
     print(fill, fill, sep='\n')
-
-
-def print_with_timestamp(statment: str, time_fmt: str = "%H-%M-%S") -> None:
-
-    print(f"[{datetime.now():{time_fmt}}]  {statment}")
 
 
 def print_stats_all_time(json_obj: dict[str, Any]) -> None:

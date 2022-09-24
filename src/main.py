@@ -13,10 +13,10 @@ def main() -> None:
 
     log.info("CellarDoor Started")
 
+    filemanager.validate_source_list(C.SOURCE)
+
     ui.draw_console()
     ui.print_header(C.APP_NAME, C.SETTINGS)
-
-    filemanager.validate_source_list(C.SOURCE)
 
     for path in C.SOURCE:
 
