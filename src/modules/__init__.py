@@ -1,13 +1,22 @@
 
+# Copyright (c) 2022, Jarrod Burns
+# All rights reserved.
+
+# This source code is licensed under the BSD-style license found in the
+# LICENSE file in the root directory of this source tree.
+
+
 from pathlib import Path
+import fileinput
 import logging
 import logging.config
+import sys
 
 
 LOG_DIR = Path().cwd().parent.joinpath("logs")
 LOG_CONFIG = LOG_DIR.joinpath("config", "logging.config")
 LOG_FILE_PATH = repr(str(LOG_DIR.joinpath("cellardoor.log")))
-CONFIG_PATH_ARGS = f"args=({LOG_FILE_PATH}, 'a')"
+CONFIG_PATH_ARGS = f"args=({LOG_FILE_PATH}, 'a')\n"
 
 
 def update_log_save_location(log_config: Path, config_path_args: str) -> None:
@@ -15,23 +24,13 @@ def update_log_save_location(log_config: Path, config_path_args: str) -> None:
     Checks the filehandler path in the log config and updates
     the value based on the current working dir of the project file.
     """
-    out = ""
+    for line in fileinput.input(log_config, inplace=1):
 
-    with open(log_config, "r+") as file_handle:
+        if line.startswith("args") and ".log" in line:
 
-        file_content = file_handle.read().rstrip()
+            line = line.replace(line, config_path_args)
 
-        for line in file_content.split('\n'):
-
-            if line.startswith("args") and ".log" in line:
-
-                line = line.replace(line, config_path_args)
-
-            out += line + '\n'
-
-        file_handle.seek(0)
-        file_handle.write(out)
-        file_handle.truncate()
+        sys.stdout.write(line)
 
 
 update_log_save_location(LOG_CONFIG, CONFIG_PATH_ARGS)

@@ -1,4 +1,11 @@
 
+# Copyright (c) 2022, Jarrod Burns
+# All rights reserved.
+
+# This source code is licensed under the BSD-style license found in the
+# LICENSE file in the root directory of this source tree.
+
+
 from dataclasses import dataclass, astuple
 from datetime import datetime
 from pathlib import Path
@@ -88,11 +95,11 @@ class ZipIt:
 
     def _progress_report_final(self, current_progress: float) -> None:
 
-        if current_progress < 99:  # Wiggle room for pesky floats.
+        if current_progress <= 99:  # Wiggle room for pesky floats.
 
-            log.warn("Expected progress to be > 99; got: %f", current_progress)
+            log.warn("Expected progress to be >= 99; got: %f", current_progress)
 
-            return
+            return  # Bare return exposes this failure w/o breaking the script.
 
         print(self.ERASE_LINE, end='\r', flush=True)
         print(
