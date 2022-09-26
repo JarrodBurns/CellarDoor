@@ -42,7 +42,7 @@ def from_seconds(seconds: int) -> str:
     Example output: 9 seconds
     """
     if seconds < 1:
-        return "None"
+        raise ValueError(f"Expected a value > 0; got {seconds}")
 
     # Zip clock values and intervals for safer processing
     values = [
@@ -91,9 +91,5 @@ def to_seconds(clock: str) -> int:
     return seconds
 
 
-def main() -> None:
-    pass
-
-
 if __name__ == "__main__":
-    main()
+    pass  # pragma: no cover

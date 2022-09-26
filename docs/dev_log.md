@@ -9,7 +9,9 @@ The intent of this application is to provide a low fluff file backup tool capabl
 - [X] % progress bar
 - [X] **WNI** [Update configs to YAML](#yaml-configs)
 - [X] Logging
+- [X] [Select license](#-license)
 - [ ] [Windows Task Scheduler](#windows-task-scheduler)
+- [ ] Version 1.0
 
 ## Fixes
 - [X] Incorporate new datetime constants & rewrite parser logic
@@ -51,3 +53,8 @@ The following articles highlight different threading and multi-processing operat
 
 ## YAML Configs
 After careful consideration, I've decided to forgo YAML files. I would prefer to use the format, but I can't justify bringing in the dependency. Currently the application runs off native python and this should be preserved if possible.
+
+## License
+Selected BSD 3-Clause
+
+

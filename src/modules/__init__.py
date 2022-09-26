@@ -6,6 +6,7 @@
 # LICENSE file in the root directory of this source tree.
 
 
+from contextlib import closing
 from pathlib import Path
 import fileinput
 import logging
@@ -24,13 +25,15 @@ def update_log_save_location(log_config: Path, config_path_args: str) -> None:
     Checks the filehandler path in the log config and updates
     the value based on the current working dir of the project file.
     """
-    for line in fileinput.input(log_config, inplace=1):
+    with closing(fileinput.input(log_config, inplace=1)) as file_handle:
 
-        if line.startswith("args") and ".log" in line:
+        for line in file_handle:
 
-            line = line.replace(line, config_path_args)
+            if line.startswith("args") and ".log" in line:
 
-        sys.stdout.write(line)
+                line = line.replace(line, config_path_args)
+
+            sys.stdout.write(line)
 
 
 update_log_save_location(LOG_CONFIG, CONFIG_PATH_ARGS)

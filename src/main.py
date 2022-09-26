@@ -10,10 +10,15 @@ from pathlib import Path
 import logging
 import time
 
-import modules.constants as C
-import modules.filemanager as filemanager
-import modules.ui as ui
-import modules.zipit as zipit
+from modules import constants as C
+from modules import filemanager
+from modules import ui
+from modules import zipit
+
+# import modules.constants as C
+# import modules.filemanager as filemanager
+# import modules.ui as ui
+# import modules.zipit as zipit
 
 
 def main() -> None:
