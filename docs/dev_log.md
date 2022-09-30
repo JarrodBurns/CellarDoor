@@ -10,6 +10,7 @@ The intent of this application is to provide a low fluff file backup tool capabl
 - [X] **WNI** [Update configs to YAML](#yaml-configs)
 - [X] Logging
 - [X] [Select license](#-license)
+- [ ] Disabling scheduled task option, NULL value check
 - [ ] [Windows Task Scheduler](#windows-task-scheduler)
 - [ ] Version 1.0
 
