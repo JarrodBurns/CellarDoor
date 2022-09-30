@@ -9,8 +9,10 @@
 from datetime import datetime
 from pathlib import Path
 from typing import Any
+import getpass
 import json
 import logging
+import xml.etree.ElementTree as ET
 
 
 log = logging.getLogger(__name__)
@@ -51,6 +53,23 @@ def _get_or_set_json(src: Path, fallback: dict[str, Any]) -> dict[str, Any]:
         log.warn("Source file not found, using fallback. Expected: %s", src)
 
     return _get_json(src)
+
+
+def _validate_go_time(go_time: str) -> str:
+
+    go_time = str(go_time) + ":00"
+
+    if len(go_time) != 8:
+
+        log.error("Invalid 24 hour time format. Expected: NN:NN  Got: %s", go_time)
+        raise ValueError()
+
+    if int(go_time[:2]) > 23:
+
+        log.error("Invalid 24 hour time format. Hours must be < 24  Got: %s", go_time[:1])
+        raise ValueError()
+
+    return go_time
 
 
 def get_settings(src: Path) -> dict[str, Any]:
@@ -128,6 +147,29 @@ def validate_source_list(source: Path):
         log.error("Expected list like object; got: %s", type(source))
 
         raise KeyError(f"Expected list like object; got: {type(source)}")
+
+
+def write_xml(xml_src: Path, xml_namespace: str, go_time: str) -> None:
+    """
+    Prepares XML schema for the Windows Task Scheduler.
+    MS Documentation reference: https://tinyurl.com/yckmzuaz
+    """
+    start_in_dir = xml_src.parent.parent.joinpath("src")
+    mainfile_path = start_in_dir.joinpath("main.py")
+
+    ET.register_namespace('', xml_namespace)
+    tree = ET.parse(xml_src)
+    root = tree.getroot()
+
+    start_boundry = root[1][0][0].text.split('T')
+    start_boundry[1] = _validate_go_time(go_time)
+
+    root[1][0][0].text = 'T'.join(start_boundry)
+    root[2][0][0].text = getpass.getuser()
+    root[4][0][0].text = str(mainfile_path)
+    root[4][0][1].text = str(start_in_dir)
+
+    tree.write(xml_src, encoding="UTF-16", xml_declaration=True)
 
 
 def main() -> None:
