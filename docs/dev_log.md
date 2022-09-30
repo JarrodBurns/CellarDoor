@@ -1,7 +1,7 @@
 # CellarDoor File Backup
 The intent of this application is to provide a low fluff file backup tool capable of self executing once per day.
 
-# TO DO
+# TO DO (Version 1.0)
 - [X] [Record and Display Stats](#record-and-display-stats)
 - [X] Relative imports
 - [X] **WNI** [Multi-Process Zip Operations](#multi-process-zip-operations)
@@ -10,9 +10,16 @@ The intent of this application is to provide a low fluff file backup tool capabl
 - [X] **WNI** [Update configs to YAML](#yaml-configs)
 - [X] Logging
 - [X] [Select license](#-license)
-- [ ] Disabling scheduled task option, NULL value check
-- [ ] [Windows Task Scheduler](#windows-task-scheduler)
-- [ ] Version 1.0
+- [X] [Windows Task Scheduler](#windows-task-scheduler)
+- [X] Version 1.0
+
+## TO DO (Version 1.1)
+- [ ] Build XML Datetime in app
+- [ ] Add logging to scheduler
+- [ ] Define GO TIME exceptions
+- [ ] Argparse integration(#argparse-integration)
+- [ ] Disabling scheduled task option, NULL value check for GO TIME
+- [ ] Freeze Env
 
 ## Fixes
 - [X] Incorporate new datetime constants & rewrite parser logic
@@ -32,8 +39,8 @@ The intent of this application is to provide a low fluff file backup tool capabl
 - [X] [Logging](https://docs.python.org/3/library/logging.html)
 - [X] [Logging Config File](https://docs.python.org/3/library/logging.config.html#module-logging.config)
 - [X] [YAML](https://realpython.com/python-yaml/)
-- [ ] [XML Processing Modules](https://docs.python.org/3/library/xml.html?highlight=xml#module-xml)
-- [ ] [Task Scheduler Schema](https://docs.microsoft.com/en-us/windows/win32/taskschd/task-scheduler-schema)
+- [X] [XML Processing Modules](https://docs.python.org/3/library/xml.html?highlight=xml#module-xml)
+- [X] [Task Scheduler Schema](https://docs.microsoft.com/en-us/windows/win32/taskschd/task-scheduler-schema)
 
 ## Windows Task Scheduler
 So far I have written some logic to handle scheduling windows tasks programmatically, this logic works correctly and CRUD operations can be preformed on tasks. The issue occurs when referencing path information through python code activated by a windows task; the application will crash. This can be prevented by pointing the optional parameter *start in* to the parent directory of the python script. I can not find a way to fill this value programmatically, nor can I find the identifier to reference it. It can be filled in manually however, and the current workaround is to schedule the task manually. A future update should either set this value or provide a suitable workaround, likely in the form of a bat file.
@@ -47,13 +54,19 @@ After conducting more investigation, it seems the best way to interact with the 
 - Cumulative size of files managed 
 
 ## Multi-Process Zip Operations
-The following articles highlight different threading and multi-processing operations for zip and unzip. The TLDR is that these methods offer no significant increase in processing time for **zipping** operations. This is due to the fact that only one file can be read in at a time. It is worth mentioning that **Unzipping** operations can see a 4x speed increase when multi-threaded and multi-processed. This app is not concerned with extracting archives and thusly will not implement this feature.
+The following articles highlight different threading and multi-processing operations for zip and unzip. The TLDR is that these methods offer no significant increase in processing time for **zipping** operations. This is due to the fact that only one file can be read in at a time. It is worth mentioning that **Unzipping** operations can see a 4x speed increase when multi-threaded and multi-processed. This app is not concerned with extracting archives and will not implement this feature.
 
 - [Multi-threaded Unzip Files](https://superfastpython.com/multithreaded-unzip-files/)
 - [Multi-threaded Zip Files](https://superfastpython.com/multithreaded-zip-files/)
 
 ## YAML Configs
 After careful consideration, I've decided to forgo YAML files. I would prefer to use the format, but I can't justify bringing in the dependency. Currently the application runs off native python and this should be preserved if possible.
+
+## Argparse Integration
+- [ ] Headless -- No Console flag
+- [ ] NoTask -- Do not schedule a task
+- [ ] FromScheduler -- Run through WTS *could be useful for debugging*
+- [ ] Verbose -- Switch logger to development mode. *add more logging for this to be userful*
 
 ## License
 Selected BSD 3-Clause

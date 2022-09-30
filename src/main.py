@@ -12,6 +12,7 @@ import time
 
 from modules import constants as C
 from modules import filemanager
+from modules import schedule
 from modules import ui
 from modules import zipit
 
@@ -21,6 +22,10 @@ def main() -> None:
     log.info("CellarDoor Started")
 
     filemanager.validate_source_list(C.SOURCE)
+    filemanager.write_xml(C.XML_PATH, C.XML_NAMESPACE, C.GO_TIME)
+
+    schedule.delete_task(C.APP_NAME)
+    schedule.new_task(C.APP_NAME, C.XML_PATH)
 
     ui.draw_console()
     ui.print_header(C.APP_NAME, C.SETTINGS)
