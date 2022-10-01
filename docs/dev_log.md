@@ -14,12 +14,13 @@ The intent of this application is to provide a low fluff file backup tool capabl
 - [X] Version 1.0
 
 ## TO DO (Version 1.1)
-- [ ] Build XML Datetime in app
+- [X] Build XML Datetime in app
 - [ ] Add logging to scheduler
 - [ ] Define GO TIME exceptions
 - [ ] Argparse integration(#argparse-integration)
 - [ ] Disabling scheduled task option, NULL value check for GO TIME
 - [ ] Freeze Env
+- [ ] Update demo image to more clearly display multiple file paths
 
 ## Fixes
 - [X] Incorporate new datetime constants & rewrite parser logic
@@ -66,7 +67,7 @@ After careful consideration, I've decided to forgo YAML files. I would prefer to
 - [ ] Headless -- No Console flag
 - [ ] NoTask -- Do not schedule a task
 - [ ] FromScheduler -- Run through WTS *could be useful for debugging*
-- [ ] Verbose -- Switch logger to development mode. *add more logging for this to be userful*
+- [ ] Verbose -- Switch logger to development mode. *add more logging for this to be useful*
 
 ## License
 Selected BSD 3-Clause

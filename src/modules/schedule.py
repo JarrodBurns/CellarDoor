@@ -7,7 +7,24 @@
 
 
 from pathlib import Path
+import logging
 import subprocess
+
+
+log = logging.getLogger(__name__)
+
+
+def _log_output(process: subprocess.CompletedProcess) -> None:
+
+    if process.returncode == 0:
+
+        success_mesage = process.stdout.decode("utf-8").rstrip()
+        log.info(success_mesage)
+
+    if process.returncode == 1:
+
+        error_message = process.stderr.decode("utf-8").rstrip()
+        log.error(error_message)
 
 
 def new_task(task_name: str, xml_recipe: Path) -> None:
@@ -19,7 +36,7 @@ def new_task(task_name: str, xml_recipe: Path) -> None:
     This function will automatically overwrite an existing task of
     the same name.
     """
-    subprocess.run(
+    process = subprocess.run(
         [
             "schtasks.exe",
             "/Create",
@@ -31,12 +48,14 @@ def new_task(task_name: str, xml_recipe: Path) -> None:
         capture_output=True
     )
 
+    _log_output(process)
+
 
 def delete_task(task_name: str) -> None:
     """
     Remove a Windows Task Scheduler task.
     """
-    subprocess.run(
+    process = subprocess.run(
         [
             "schtasks.exe",
             "/Delete",
@@ -47,12 +66,14 @@ def delete_task(task_name: str) -> None:
         capture_output=True
     )
 
+    _log_output(process)
+
 
 def run_task(task_name: str) -> None:
     """
     Run existing Windows Task Scheduler task.
     """
-    subprocess.run(
+    process = subprocess.run(
         [
             "schtasks.exe",
             "/Run",
@@ -62,11 +83,14 @@ def run_task(task_name: str) -> None:
         capture_output=True
     )
 
+    _log_output(process)
+
 
 def main() -> None:
 
     # Convenience code to run a manual backup,
     # Will break if you haven't ran CellarDoor once before.
+    # Output will not be logged.
 
     task = "CellarDoor File Backup"
     run_task(task)

@@ -151,6 +151,8 @@ def validate_source_list(source: Path):
 
 def write_xml(xml_src: Path, xml_namespace: str, go_time: str) -> None:
     """
+    Specific to the prepared XML file:  CellarDoor > data > task_recipe.xml
+
     Prepares XML schema for the Windows Task Scheduler.
     MS Documentation reference: https://tinyurl.com/yckmzuaz
     """
@@ -161,13 +163,13 @@ def write_xml(xml_src: Path, xml_namespace: str, go_time: str) -> None:
     tree = ET.parse(xml_src)
     root = tree.getroot()
 
-    start_boundry = root[1][0][0].text.split('T')
-    start_boundry[1] = _validate_go_time(go_time)
+    date = datetime.now().strftime("%Y-%m-%dT")
+    go_time = _validate_go_time(go_time)
 
-    root[1][0][0].text = 'T'.join(start_boundry)
-    root[2][0][0].text = getpass.getuser()
-    root[4][0][0].text = str(mainfile_path)
-    root[4][0][1].text = str(start_in_dir)
+    root[1][0][0].text = date + go_time         # Task start boundary
+    root[2][0][0].text = getpass.getuser()      # Current user name
+    root[4][0][0].text = str(mainfile_path)     # Path to main.py
+    root[4][0][1].text = str(start_in_dir)      # Parent dir for main.py
 
     tree.write(xml_src, encoding="UTF-16", xml_declaration=True)
 
