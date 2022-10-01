@@ -16,15 +16,17 @@ log = logging.getLogger(__name__)
 
 def _log_output(process: subprocess.CompletedProcess) -> None:
 
+    encoding = "utf-8"
+
     if process.returncode == 0:
 
-        success_mesage = process.stdout.decode("utf-8").rstrip()
-        log.info(success_mesage)
+        success_mesage = process.stdout.decode(encoding)
+        log.info(success_mesage.rstrip())
 
     if process.returncode == 1:
 
-        error_message = process.stderr.decode("utf-8").rstrip()
-        log.error(error_message)
+        error_message = process.stderr.decode(encoding)
+        log.error(error_message.rstrip())
 
 
 def new_task(task_name: str, xml_recipe: Path) -> None:
