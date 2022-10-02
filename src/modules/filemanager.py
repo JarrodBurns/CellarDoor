@@ -6,7 +6,7 @@
 # LICENSE file in the root directory of this source tree.
 
 
-from datetime import datetime
+from datetime import datetime, date
 from pathlib import Path
 from typing import Any
 import getpass
@@ -140,15 +140,6 @@ def update_stats(
     _set_json(json_path, all_time)
 
 
-def validate_source_list(source: Path):
-
-    if not isinstance(source, list):
-
-        log.error("Expected list like object; got: %s", type(source))
-
-        raise KeyError(f"Expected list like object; got: {type(source)}")
-
-
 def write_xml(xml_src: Path, xml_namespace: str, go_time: str) -> None:
     """
     Specific to the prepared XML file:  CellarDoor > data > task_recipe.xml
@@ -163,10 +154,10 @@ def write_xml(xml_src: Path, xml_namespace: str, go_time: str) -> None:
     tree = ET.parse(xml_src)
     root = tree.getroot()
 
-    date = datetime.now().strftime("%Y-%m-%dT")
+    _date = str(date.today()) + 'T'
     go_time = _validate_go_time(go_time)
 
-    root[1][0][0].text = date + go_time         # Task start boundary
+    root[1][0][0].text = _date + go_time        # Task start boundary
     root[2][0][0].text = getpass.getuser()      # Current user name
     root[4][0][0].text = str(mainfile_path)     # Path to main.py
     root[4][0][1].text = str(start_in_dir)      # Parent dir for main.py

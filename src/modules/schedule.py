@@ -20,13 +20,11 @@ def _log_output(process: subprocess.CompletedProcess) -> None:
 
     if process.returncode == 0:
 
-        success_mesage = process.stdout.decode(encoding)
-        log.info(success_mesage.rstrip())
+        log.info(process.stdout.decode(encoding).rstrip())
 
-    if process.returncode == 1:
+        return
 
-        error_message = process.stderr.decode(encoding)
-        log.error(error_message.rstrip())
+    log.error(process.stderr.decode(encoding).rstrip())
 
 
 def new_task(task_name: str, xml_recipe: Path) -> None:

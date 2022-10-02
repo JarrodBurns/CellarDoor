@@ -25,7 +25,7 @@ def _print_source_directories(src_dirs: list[str, ...]) -> None:
 
     if len(src_dirs) == 1:
 
-        print(f"[!] Backup this directory:  {src_dirs[0]}\n\n")
+        print(f"[!] Backup this directory:  {src_dirs[0]}\n")
 
         return
 

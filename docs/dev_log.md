@@ -15,12 +15,12 @@ The intent of this application is to provide a low fluff file backup tool capabl
 
 ## TO DO (Version 1.1)
 - [X] Build XML Datetime in app
-- [ ] Add logging to scheduler
-- [ ] Define GO TIME exceptions
-- [ ] Argparse integration(#argparse-integration)
-- [ ] Disabling scheduled task option, NULL value check for GO TIME
+- [X] Add logging to scheduler
+- [X] Disabling scheduled task option, NULL value check for GO TIME
 - [ ] Freeze Env
+- [ ] Define GO TIME exceptions
 - [ ] Update demo image to more clearly display multiple file paths
+- [ ] [Argparse integration](#argparse-integration)
 
 ## Fixes
 - [X] Incorporate new datetime constants & rewrite parser logic
