@@ -1,7 +1,16 @@
 # CellarDoor File Backup
 The intent of this application is to provide a low fluff file backup tool capable of self executing once per day.
 
-# TO DO (Version 1.0)
+## TO DO (Version 1.1)
+- [X] Build XML Datetime in app
+- [X] Add logging to scheduler
+- [X] Disabling scheduled task option, NULL value check for GO TIME
+- [ ] Freeze Env
+- [ ] Define GO TIME exceptions
+- [ ] Update demo image to more clearly display multiple file paths
+- [ ] [Argparse integration](#argparse-integration)
+
+## TO DO (Version 1.0)
 - [X] [Record and Display Stats](#record-and-display-stats)
 - [X] Relative imports
 - [X] **WNI** [Multi-Process Zip Operations](#multi-process-zip-operations)
@@ -12,15 +21,6 @@ The intent of this application is to provide a low fluff file backup tool capabl
 - [X] [Select license](#-license)
 - [X] [Windows Task Scheduler](#windows-task-scheduler)
 - [X] Version 1.0
-
-## TO DO (Version 1.1)
-- [X] Build XML Datetime in app
-- [X] Add logging to scheduler
-- [X] Disabling scheduled task option, NULL value check for GO TIME
-- [ ] Freeze Env
-- [ ] Define GO TIME exceptions
-- [ ] Update demo image to more clearly display multiple file paths
-- [ ] [Argparse integration](#argparse-integration)
 
 ## Fixes
 - [X] Incorporate new datetime constants & rewrite parser logic
