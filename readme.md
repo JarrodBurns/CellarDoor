@@ -17,5 +17,7 @@ Navigate to **CellarDoor > Data > settings.json** and populate all values
 In order to run automatically, CellarDoor will register a task with Windows Task Scheduler named "CellarDoor File Backup". This will happen at the time you specify in *settings.json > GO_TIME*
 
 ## Dependencies
+CellarDoor requires Python to run. If you do not have it installed on your machine, you can download the latest version [here](https://www.python.org/downloads/).
+
 - Python 3.7
 - Win 7
